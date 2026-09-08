@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SN.EDIT09 — AI Shayari Studio</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#0b0b10;color:#fff}
+header{padding:22px 18px;background:linear-gradient(135deg,#171727,#0d0d13);border-bottom:1px solid #292936}
+.logo{font-size:27px;font-weight:800;letter-spacing:1px}.tag{color:#aaa;font-size:13px;margin-top:4px}
+main{max-width:700px;margin:auto;padding:16px}.card{background:#14141d;border:1px solid #292936;border-radius:18px;padding:16px;margin-bottom:14px}
+h2{font-size:18px;margin:0 0 12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button,.filebtn{width:100%;border:0;border-radius:12px;padding:13px;background:#262638;color:white;font-weight:700;cursor:pointer}
+.primary{background:linear-gradient(135deg,#7c3aed,#2563eb)}input,textarea,select{width:100%;background:#0e0e15;color:#fff;border:1px solid #30303d;border-radius:12px;padding:12px;margin-top:8px;outline:none}
+textarea{min-height:110px;resize:vertical}.preview{aspect-ratio:9/16;max-height:520px;margin:auto;background:linear-gradient(145deg,#25203b,#101018);border-radius:18px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px}
+.preview img,.preview video{position:absolute;width:100%;height:100%;object-fit:cover;inset:0}.overlay{position:relative;z-index:2;text-shadow:0 2px 8px #000;font-size:22px;font-weight:700;white-space:pre-wrap}.small{color:#aaa;font-size:12px;margin-top:8px}
+footer{text-align:center;color:#777;padding:20px;font-size:12px}
+</style>
+</head>
+<body>
+<header><div class="logo">SN.EDIT09</div><div class="tag">AI Shayari • Photo • Video Studio</div></header>
+<main>
+<section class="card">
+<h2>🤖 AI Shayari</h2>
+<select id="mood"><option>Love</option><option>Sad</option><option>Attitude</option><option>Motivation</option><option>Friendship</option></select>
+<button class="primary" style="margin-top:10px" onclick="generate()">✨ Shayari Generate</button>
+<textarea id="shayari" placeholder="अपनी Shayari यहाँ लिखें..."></textarea>
+</section>
+
+<section class="card">
+<h2>🖼️ Photo / 🎬 Video</h2>
+<div class="row">
+<label class="filebtn">📷 Photo<input hidden type="file" accept="image/*" onchange="photo(event)"></label>
+<label class="filebtn">🎬 Video<input hidden type="file" accept="video/*" onchange="vid(event)"></label>
+</div>
+<div class="small">Mobile पर photo/video चुनकर 9:16 preview में देखें।</div>
+</section>
+
+<section class="card">
+<h2>✍️ Text Style</h2>
+<input id="size" type="range" min="16" max="42" value="22" oninput="update()">
+<select id="position" onchange="update()"><option value="center">Center</option><option value="bottom">Bottom</option><option value="top">Top</option></select>
+</section>
+
+<section class="card">
+<h2>📱 Preview</h2>
+<div class="preview" id="preview"><div class="overlay" id="overlay">आपकी Shayari यहाँ दिखाई देगी ❤️</div></div>
+<button class="primary" style="margin-top:12px" onclick="saveText()">💾 Shayari Text Save करें</button>
+</section>
+</main>
+<footer>SN.EDIT09 • Create your own Shayari style</footer>
+
+<script>
+const sh={
+Love:["तेरी यादों से ही मेरी शाम सजती है, तू पास हो तो हर खुशी अपनी लगती है। ❤️","कुछ रिश्ते शब्दों से नहीं, एहसासों से लिखे जाते हैं।"],
+Sad:["मुस्कुराना सीख लिया है हमने, क्योंकि हर बात बताना जरूरी नहीं। 💔","कुछ यादें दिल में रह जाती हैं, लोग चले जाते हैं।"],
+Attitude:["हम अपनी पहचान खुद बनाते हैं, किसी के नाम से नहीं। 😎","जो समझना है समझ लो, हम बदलने वालों में से नहीं।"],
+Motivation:["रास्ते मुश्किल हों तो हिम्मत और बढ़ा लो, मंज़िल खुद करीब आ जाएगी। 🔥","धीरे चलो लेकिन रुकना मत, जीत एक दिन जरूर मिलेगी।"],
+Friendship:["सच्चा दोस्त वही है जो खामोशी भी समझ जाए। 🤝","दोस्ती वक्त नहीं देखती, बस दिल देखती है।"]
+};
+function generate(){let a=sh[mood.value];shayari.value=a[Math.floor(Math.random()*a.length)];update()}
+function update(){overlay.textContent=shayari.value||"आपकी Shayari यहाँ दिखाई देगी ❤️";overlay.style.fontSize=size.value+"px";let p=position.value;overlay.style.position="absolute";overlay.style.left="20px";overlay.style.right="20px";overlay.style.top=p==="top"?"25px":p==="center"?"50%":"auto";overlay.style.bottom=p==="bottom"?"25px":"auto";if(p==="center")overlay.style.transform="translateY(-50%)";else overlay.style.transform="none"}
+shayari.addEventListener("input",update);
+function photo(e){let f=e.target.files[0];if(!f)return;let u=URL.createObjectURL(f);preview.innerHTML='<img src="'+u+'"><div class="overlay" id="overlay"></div>';overlay=preview.querySelector(".overlay");update()}
+function vid(e){let f=e.target.files[0];if(!f)return;let u=URL.createObjectURL(f);preview.innerHTML='<video src="'+u+'" controls autoplay loop muted></video><div class="overlay" id="overlay"></div>';overlay=preview.querySelector(".overlay");update()}
+function saveText(){let t=shayari.value.trim();if(!t){alert("पहले Shayari लिखें या Generate करें");return}let b=new Blob([t],{type:"text/plain"});let a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="SN.EDIT09-Shayari.txt";a.click()}
+update();
+</script>
+</body>
+</html>
